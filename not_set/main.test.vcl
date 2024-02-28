@@ -430,6 +430,27 @@ sub test_add_header_concat_unset_header {
   }
 }
 
+// @suite: Set header the result concatenation of unset STRING var and unset header.
+sub test_set_header_concat_unset_string2 {
+  declare local var.unset STRING;
+  set req.http.unset_header = var.unset;
+
+  set req.http.unset_header = req.http.Foo var.unset;
+  if (req.http.unset_header == "") {
+    log "empty string";
+    assert.true(false, "got: empty string, expected: not_set");
+  } else if (req.http.unset_header == "(null)") {
+    log "(null)";
+    assert.true(false, "got: (null), expected: not_set");
+  } else if (!req.http.unset_header) {
+    log "not_set"; // correct
+    assert.true(true);
+  } else {
+    log "no match";
+    assert.true(false, "got: no match, expected: not_set");
+  }
+}
+
 // @suite: Add header the result of concatenation of a string literal and unset STRING var
 sub test_add_header_concat_unset_string {
   log "add header concat unset string (left):";
@@ -1000,6 +1021,10 @@ sub test_log_statement_unset_ip {
     log "+ concat";
     log var.unset + "foo";
     log "expect: (null)foo";
+
+    log "space concat two not_set values";
+    log var.unset req.http.unset;
+    log "expect: (null)";
 }
 
 // @suite: Log statement with unset header
@@ -1033,4 +1058,20 @@ sub test_log_statement_unset_header {
     log "+ concat";
     log req.http.unset:field + "foo";
     log "expect: (null)foo";
+
+    log "space concat two not_set values";
+    log req.http.unset:field req.http.unset;
+    log "expect: (null)";
+
+    log "space concat three not_set values";
+    log req.http.unset:field + req.http.unset + req.http.unset2;
+    log "expect: (null)";
+
+    log "+ concat two not_set values";
+    log req.http.unset:field req.http.unset;
+    log "expect: (null)";
+
+    log "+ concat three not_set values";
+    log req.http.unset:field + req.http.unset + req.http.unset2;
+    log "expect: (null)";
 }
