@@ -431,7 +431,7 @@ sub test_add_header_concat_unset_header {
 }
 
 // @suite: Set header the result concatenation of unset STRING var and unset header.
-sub test_set_header_concat_unset_string2 {
+sub test_set_header_concat_unset_string_unset_header {
   declare local var.unset STRING;
   set req.http.unset_header = var.unset;
 
